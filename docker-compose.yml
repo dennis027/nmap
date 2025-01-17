@@ -1,0 +1,42 @@
+version: "3.8"
+
+networks:
+  nmap-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.3.0.0/24
+
+services:
+  # Angular Frontend (submodule)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular
+    
+    volumes:
+      - ./nmap-frontend:/usr/src/app
+    
+    ports:
+      - 4200:80
+
+    networks:
+      fbs-network:
+        ipv4_address: 10.3.0.102
+
+  # Django Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.django
+    
+    volumes:
+      - ./nmap-backend:/app
+    
+    ports:
+      - 8000:8000
+
+    networks:
+      fbs-network:
+        ipv4_address: 10.3.0.101
