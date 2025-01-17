@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.3"
 
 networks:
   nmap-network:
@@ -6,30 +6,30 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 10.3.0.0/24
+        - subnet: 10.4.0.0/24  # Align subnet with IP addresses
 
 services:
   # Angular Frontend (submodule)
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile.angular
+      dockerfile: ./nmap-frontend/Dockerfile
     
     volumes:
       - ./nmap-frontend:/usr/src/app
     
     ports:
-      - 4200:80
+      - 4200:4200
 
     networks:
-      fbs-network:
-        ipv4_address: 10.3.0.102
+      nmap-network:
+        ipv4_address: 10.4.0.99  # Ensure this IP is within the subnet
 
   # Django Backend
   backend:
     build:
       context: .
-      dockerfile: Dockerfile.django
+      dockerfile: ./nmap-backend/Dockerfile
     
     volumes:
       - ./nmap-backend:/app
@@ -38,5 +38,5 @@ services:
       - 8000:8000
 
     networks:
-      fbs-network:
-        ipv4_address: 10.3.0.101
+      nmap-network:
+        ipv4_address: 10.4.0.100  # Ensure this IP is within the subnet
